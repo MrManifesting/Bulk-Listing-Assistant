@@ -14,19 +14,37 @@ struct ContentView: View {
 
     var body: some View {
         NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+            Group {
+                if items.isEmpty {
+                    ContentUnavailableView {
+                        Label("No Items", systemImage: "plus.circle")
+                    } description: {
+                        Text("Add an item to start tracking your inventory.")
+                    } actions: {
+                        Button(action: addItem) {
+                            Text("Add First Item")
+                        }
+                        .buttonStyle(.borderedProminent)
+                    }
+                } else {
+                    List {
+                        ForEach(items) { item in
+                            NavigationLink {
+                                Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
+                            } label: {
+                                Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+                            }
+                        }
+                        .onDelete(perform: deleteItems)
                     }
                 }
-                .onDelete(perform: deleteItems)
             }
+            .navigationTitle("Items")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
+                    if !items.isEmpty {
+                        EditButton()
+                    }
                 }
                 ToolbarItem {
                     Button(action: addItem) {
