@@ -24,6 +24,17 @@ struct ContentView: View {
                 }
                 .onDelete(perform: deleteItems)
             }
+            .overlay {
+                if items.isEmpty {
+                    ContentUnavailableView {
+                        Label("No Listings", systemImage: "list.bullet.rectangle.portrait")
+                    } description: {
+                        Text("Start by adding your first listing to begin.")
+                    } actions: {
+                        Button("Add Item", action: addItem)
+                    }
+                }
+            }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     EditButton()
@@ -35,7 +46,7 @@ struct ContentView: View {
                 }
             }
         } detail: {
-            Text("Select an item")
+            ContentUnavailableView("No Selection", systemImage: "selection.pin.in.out", description: Text("Select an item from the list to view its details."))
         }
     }
 
