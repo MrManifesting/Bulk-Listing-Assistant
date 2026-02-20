@@ -14,19 +14,34 @@ struct ContentView: View {
 
     var body: some View {
         NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+            Group {
+                if items.isEmpty {
+                    ContentUnavailableView {
+                        Label("No Items", systemImage: "list.bullet.rectangle.portrait")
+                    } description: {
+                        Text("Add your first item to get started.")
+                    } actions: {
+                        Button("Add Item", action: addItem)
+                            .buttonStyle(.borderedProminent)
+                    }
+                } else {
+                    List {
+                        ForEach(items) { item in
+                            NavigationLink {
+                                Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
+                            } label: {
+                                Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+                            }
+                        }
+                        .onDelete(perform: deleteItems)
                     }
                 }
-                .onDelete(perform: deleteItems)
             }
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
+                if !items.isEmpty {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        EditButton()
+                    }
                 }
                 ToolbarItem {
                     Button(action: addItem) {
@@ -35,7 +50,11 @@ struct ContentView: View {
                 }
             }
         } detail: {
-            Text("Select an item")
+            ContentUnavailableView {
+                Label("Select an Item", systemImage: "sidebar.left")
+            } description: {
+                Text("Choose an item from the list to see its details.")
+            }
         }
     }
 
