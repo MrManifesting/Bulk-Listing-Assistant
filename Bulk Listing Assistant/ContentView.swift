@@ -14,19 +14,34 @@ struct ContentView: View {
 
     var body: some View {
         NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+            Group {
+                if items.isEmpty {
+                    ContentUnavailableView {
+                        Label("No Inventory Items", systemImage: "box.truck")
+                    } description: {
+                        Text("Start by adding items you want to list for sale.")
+                    } actions: {
+                        Button("Add Your First Item", action: addItem)
+                    }
+                } else {
+                    List {
+                        ForEach(items) { item in
+                            NavigationLink {
+                                Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
+                            } label: {
+                                Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+                            }
+                        }
+                        .onDelete(perform: deleteItems)
                     }
                 }
-                .onDelete(perform: deleteItems)
             }
+            .navigationTitle("Inventory")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
+                    if !items.isEmpty {
+                        EditButton()
+                    }
                 }
                 ToolbarItem {
                     Button(action: addItem) {
@@ -35,7 +50,11 @@ struct ContentView: View {
                 }
             }
         } detail: {
-            Text("Select an item")
+            ContentUnavailableView {
+                Label("No Selection", systemImage: "hand.tap")
+            } description: {
+                Text("Select an inventory item from the sidebar to see more details.")
+            }
         }
     }
 
