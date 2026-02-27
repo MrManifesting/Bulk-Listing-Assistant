@@ -7,9 +7,11 @@
 
 import SwiftUI
 import SwiftData
+import UIKit
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.scenePhase) private var scenePhase
     @Query private var items: [Item]
 
     var body: some View {
@@ -36,6 +38,23 @@ struct ContentView: View {
             }
         } detail: {
             Text("Select an item")
+        }
+        .blur(radius: scenePhase != .active ? 20 : 0)
+        .overlay {
+            if scenePhase != .active {
+                ZStack {
+                    Color(uiColor: .systemBackground)
+                    VStack(spacing: 16) {
+                        Image(systemName: "lock.shield")
+                            .font(.system(size: 60))
+                            .foregroundColor(.secondary)
+                        Text("Privacy Protected")
+                            .font(.headline)
+                            .foregroundColor(.secondary)
+                    }
+                }
+                .ignoresSafeArea()
+            }
         }
     }
 
