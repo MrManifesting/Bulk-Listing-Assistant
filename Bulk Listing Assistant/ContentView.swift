@@ -10,6 +10,7 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.scenePhase) private var scenePhase
     @Query private var items: [Item]
 
     var body: some View {
@@ -36,6 +37,23 @@ struct ContentView: View {
             }
         } detail: {
             Text("Select an item")
+        }
+        // Apply a blur effect and an opaque overlay when the app is not active
+        // to prevent sensitive information leakage in OS-level App Switcher snapshots.
+        .blur(radius: scenePhase != .active ? 20 : 0)
+        .overlay {
+            if scenePhase != .active {
+                #if os(iOS)
+                Color(uiColor: .systemBackground)
+                    .ignoresSafeArea()
+                #elseif os(macOS)
+                Color(nsColor: .windowBackgroundColor)
+                    .ignoresSafeArea()
+                #else
+                Color.black
+                    .ignoresSafeArea()
+                #endif
+            }
         }
     }
 
