@@ -1,0 +1,3 @@
+## 2025-02-25 - Enhanced Inventory Sidebar with Empty State
+**Learning:** In SwiftUI 'NavigationSplitView', wrapping sidebar content in a 'Group' allows for smooth conditional switching between a 'List' and a 'ContentUnavailableView'. This ensures that navigation titles and toolbars remain consistently placed regardless of whether the list is empty. Additionally, hiding the 'EditButton' when the list is empty reduces UI clutter and prevents invalid interactions.
+**Action:** Use 'Group' for conditional sidebar content in 'NavigationSplitView' and always provide a 'ContentUnavailableView' for empty lists to guide the user.
