@@ -10,7 +10,18 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.scenePhase) private var scenePhase
     @Query private var items: [Item]
+
+    private var snapshotBackgroundColor: Color {
+        #if os(iOS)
+        return Color(uiColor: .systemBackground)
+        #elseif os(macOS)
+        return Color(nsColor: .windowBackgroundColor)
+        #else
+        return Color.secondary
+        #endif
+    }
 
     var body: some View {
         NavigationSplitView {
@@ -36,6 +47,13 @@ struct ContentView: View {
             }
         } detail: {
             Text("Select an item")
+        }
+        .blur(radius: scenePhase != .active ? 20 : 0)
+        .overlay {
+            if scenePhase != .active {
+                snapshotBackgroundColor
+                    .ignoresSafeArea()
+            }
         }
     }
 
