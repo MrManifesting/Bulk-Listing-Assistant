@@ -10,7 +10,8 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
+    // Use an explicit sort order to leverage the database index for improved retrieval speed.
+    @Query(sort: \Item.timestamp, order: .reverse) private var items: [Item]
 
     var body: some View {
         NavigationSplitView {

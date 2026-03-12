@@ -10,6 +10,8 @@ import SwiftData
 
 @Model
 final class Item {
+    // Indexing frequently queried/sorted fields improves database performance.
+    #Index([\.timestamp])
     var timestamp: Date
     
     init(timestamp: Date) {
