@@ -10,7 +10,9 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
+    // BOLT OPTIMIZATION: Use indexed timestamp for reverse-chronological sorting.
+    // This utilizes the database index for O(log N) retrieval instead of full-table scan.
+    @Query(sort: \Item.timestamp, order: .reverse) private var items: [Item]
 
     var body: some View {
         NavigationSplitView {
