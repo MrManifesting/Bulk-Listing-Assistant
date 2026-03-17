@@ -14,28 +14,49 @@ struct ContentView: View {
 
     var body: some View {
         NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+            Group {
+                if items.isEmpty {
+                    ContentUnavailableView {
+                        Label("Inventory", systemImage: "box.truck")
+                    } description: {
+                        Text("Your inventory is empty. Start by adding a new item.")
+                    } actions: {
+                        Button("Add Item", action: addItem)
+                            .buttonStyle(.borderedProminent)
+                    }
+                } else {
+                    List {
+                        ForEach(items) { item in
+                            NavigationLink {
+                                Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
+                            } label: {
+                                Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+                            }
+                        }
+                        .onDelete(perform: deleteItems)
                     }
                 }
-                .onDelete(perform: deleteItems)
             }
+            .navigationTitle("Inventory")
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
+                if !items.isEmpty {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        EditButton()
+                    }
                 }
                 ToolbarItem {
                     Button(action: addItem) {
                         Label("Add Item", systemImage: "plus")
                     }
+                    .help("Add a new item to your inventory")
                 }
             }
         } detail: {
-            Text("Select an item")
+            ContentUnavailableView {
+                Label("No Selection", systemImage: "list.bullet.circle")
+            } description: {
+                Text("Select an item from the inventory to view its details.")
+            }
         }
     }
 
