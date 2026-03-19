@@ -1,0 +1,3 @@
+## 2025-02-25 - Polished Empty States in NavigationSplitView
+**Learning:** In a `NavigationSplitView`, the "detail" view's initial state is often overlooked, leading to a blank or unhelpful screen. Using `ContentUnavailableView` (introduced in iOS 17) provides a consistent and accessible way to guide users on both the sidebar (when empty) and the detail view (when no selection is made).
+**Action:** Always pair `NavigationSplitView` with meaningful empty states in both sidebar and detail columns. Wrap sidebar content in a `Group` to keep navigation modifiers (like `.navigationTitle`) stable while swapping between `List` and `ContentUnavailableView`.
