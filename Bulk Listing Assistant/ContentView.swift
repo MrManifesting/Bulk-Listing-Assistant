@@ -14,16 +14,29 @@ struct ContentView: View {
 
     var body: some View {
         NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+            Group {
+                if items.isEmpty {
+                    ContentUnavailableView {
+                        Label("No Items", systemImage: "plus.circle")
+                    } description: {
+                        Text("Add a new item to get started.")
+                    } actions: {
+                        Button("Add Item", action: addItem)
+                    }
+                } else {
+                    List {
+                        ForEach(items) { item in
+                            NavigationLink {
+                                Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
+                            } label: {
+                                Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+                            }
+                        }
+                        .onDelete(perform: deleteItems)
                     }
                 }
-                .onDelete(perform: deleteItems)
             }
+            .navigationTitle("Items")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     EditButton()
@@ -32,10 +45,15 @@ struct ContentView: View {
                     Button(action: addItem) {
                         Label("Add Item", systemImage: "plus")
                     }
+                    .help("Add a new item")
                 }
             }
         } detail: {
-            Text("Select an item")
+            ContentUnavailableView(
+                "No Selection",
+                systemImage: "list.bullet.circle",
+                description: Text("Select an item from the sidebar to view its details.")
+            )
         }
     }
 
