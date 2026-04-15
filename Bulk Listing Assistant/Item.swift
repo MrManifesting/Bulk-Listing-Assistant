@@ -10,6 +10,7 @@ import SwiftData
 
 @Model
 final class Item {
+    #Index([\.timestamp])
     var timestamp: Date
     
     init(timestamp: Date) {
