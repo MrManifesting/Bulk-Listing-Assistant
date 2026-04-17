@@ -1,0 +1,3 @@
+## 2025-02-25 - SwiftData Indexing for Performance
+**Learning:** In SwiftData, explicitly adding a `#Index` to frequently sorted or filtered properties significantly improves performance as the dataset grows. Pairing this with an explicit sort order in `@Query` ensures that the database engine can utilize the B-tree index directly, reducing sort complexity from O(N log N) to O(1). **Crucially, the `#Index` macro is a declaration macro and must be placed INSIDE the `@Model` class body.**
+**Action:** Always check if `@Query` properties are indexed, especially for primary display sorts like timestamps. Ensure `#Index` is correctly placed within the class scope.
