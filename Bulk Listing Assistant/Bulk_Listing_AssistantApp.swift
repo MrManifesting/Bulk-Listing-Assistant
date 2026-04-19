@@ -11,6 +11,7 @@ import OSLog
 
 @main
 struct Bulk_Listing_AssistantApp: App {
+    @Environment(\.scenePhase) private var scenePhase
     private static let logger = Logger(subsystem: "MrListerLLC.Bulk-Listing-Assistant", category: "Persistence")
 
     var sharedModelContainer: ModelContainer = {
@@ -49,6 +50,20 @@ struct Bulk_Listing_AssistantApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                // Blur the content when the app is in the background to protect sensitive information in App Switcher.
+                .blur(radius: scenePhase == .active ? 0 : 20)
+                .overlay {
+                    if scenePhase != .active {
+                        ZStack {
+                            Rectangle()
+                                .fill(.ultraThinMaterial)
+                            Image(systemName: "lock.shield.fill")
+                                .font(.system(size: 60))
+                                .foregroundStyle(.secondary)
+                        }
+                        .ignoresSafeArea()
+                    }
+                }
         }
         .modelContainer(sharedModelContainer)
     }
