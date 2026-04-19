@@ -10,6 +10,9 @@ import SwiftData
 
 @Model
 final class Item {
+    // BOLT OPTIMIZATION: Index on timestamp to speed up sorting and retrieval.
+    // Estimated impact: O(N log N) to O(log N) for lookups and indexed sorting.
+    #Index([\.timestamp])
     var timestamp: Date
     
     init(timestamp: Date) {

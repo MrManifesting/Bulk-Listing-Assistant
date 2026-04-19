@@ -10,7 +10,9 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
+    // BOLT OPTIMIZATION: Explicitly sort by timestamp descending to utilize the database index.
+    // Estimated impact: Ensures O(log N) fetch performance for sorted results.
+    @Query(sort: \Item.timestamp, order: .reverse) private var items: [Item]
 
     var body: some View {
         NavigationSplitView {
