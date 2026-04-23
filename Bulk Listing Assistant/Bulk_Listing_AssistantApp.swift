@@ -11,6 +11,7 @@ import OSLog
 
 @main
 struct Bulk_Listing_AssistantApp: App {
+    @Environment(\.scenePhase) private var scenePhase
     private static let logger = Logger(subsystem: "MrListerLLC.Bulk-Listing-Assistant", category: "Persistence")
 
     var sharedModelContainer: ModelContainer = {
@@ -41,7 +42,8 @@ struct Bulk_Listing_AssistantApp: App {
             return container
         } catch {
             // Log the detailed error internally and fail with a generic message to avoid leaking details.
-            Self.logger.error("Failed to initialize ModelContainer: \(error.localizedDescription)")
+            // Using privacy: .private to ensure sensitive details aren't leaked to system logs.
+            Self.logger.error("Failed to initialize ModelContainer: \(error, privacy: .private)")
             fatalError("A critical error occurred while setting up the application storage.")
         }
     }()
@@ -49,6 +51,19 @@ struct Bulk_Listing_AssistantApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .blur(radius: scenePhase == .active ? 0 : 20)
+                .overlay {
+                    if scenePhase != .active {
+                        ZStack {
+                            Rectangle()
+                                .fill(.ultraThinMaterial)
+                            Image(systemName: "lock.shield.fill")
+                                .font(.system(size: 60))
+                                .foregroundColor(.secondary)
+                        }
+                        .ignoresSafeArea()
+                    }
+                }
         }
         .modelContainer(sharedModelContainer)
     }
